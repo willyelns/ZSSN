@@ -1,0 +1,388 @@
+<!doctype html>
+
+<html lang="en" ng-app="ZSSN">
+    <head>
+      <meta charset="utf-8">
+    
+      <title>ZSSN</title>
+      <meta name="description" content="ZSSN - (Zombie Survival Social Network)">
+      <meta name="Willyelns Xavier" content="ZSSN">
+      
+      <!-- custom css -->
+      <link rel="stylesheet" href="css/styles.css">
+        
+      <!-- Compiled and minified CSS -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+
+      <!-- Jquery -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+      <!-- Compiled and minified JavaScript -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+      <!-- angular scripts -->
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+
+      <!-- Icons -->
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <!-- Controller -->
+      <script src="js/survivor.js"></script>
+      <!-- Setting jQuery -->
+      <script src="js/scripts.js"></script>
+
+    </head>
+    <body >
+        <!-- ADD survivor Modal -->
+        <div id="addSurvivorModal" class="modal" ng-controller="SurvivorController">
+          <div class="modal-content">
+            <h4>Add Survivor</h4>
+            <form>
+              <div class="row">
+                <div class="input-field col s6 offset-s3">
+                  <input  ng-model="name" type="text" class="validate">
+                  <label class="active" for="name">Name</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s6 offset-s3">
+                  <input  ng-model="age" type="number" class="validate">
+                  <label class="active" for="name">Age</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col s6 offset-s3">
+                  <select id="gender">
+                      <option value="" disabled selected>Gender</option>
+                      <option value="M">Male</option>
+                      <option value="F">Female</option>
+                    </select>
+                    <label>Gender</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s6 offset-s3">
+                  <input  ng-model="lat" type="number" value="0.0" class="validate">
+                  <label class="active black-text" for="name">Latitude</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s6 offset-s3">
+                  <input  ng-model="long" type="number" class="validate">
+                  <label class="active black-text" for="name">Longitude</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col s6 offset-s3">
+                   <p>Water:</p>
+                  <p class="range-field">
+                    <input type="range" id="water" min="0" max="10" />
+                  </p>
+                   <p>Food:</p>
+                  <p class="range-field">
+                    <input type="range" id="food" min="0" max="10" />
+                  </p>
+                   <p>Medication:</p>
+                  <p class="range-field">
+                    <input type="range" id="medication" min="0" max="10" />
+                  </p>
+                  <p>Ammunition:</p>
+                  <p class="range-field">
+                    <input type="range" id="ammunition" min="0" max="10" />
+                  </p>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <a href="#!" ng-click="enviar()" class=" modal-action modal-close waves-effect waves-red btn-flat">Add</a>
+            <a href="#!" class=" modal-action modal-close waves-effect waves-red btn-flat">Cancel</a>
+          </div>
+        </div>
+
+         <!-- Search Survivor Modal -->
+          <div id="pesquisaSurvivorModal" class="modal" ng-controller="SurvivorController">
+            <div class="modal-content">
+              <h4>Search Survivor By ID</h4>
+              <form>
+                   <div class="row">
+                    <div class="input-field col s6 offset-s3">
+                      <input  ng-model="ID" type="text" class="validate">
+                      <label class="active black-text" for="name">ID</label>
+                    </div>
+                    <a ng-click="searchSurvivor()" class="red waves-effect waves-light btn">Search</a>
+              </form>
+                <div class="row">
+                  <div class="col s12" ng-show="showProfile === true">
+                      <b><p class="center">Survivor Found : {{survivorFound}}</p></b>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col s12" ng-show="showError === true">
+                      <b><p class="center">{{survivorFound}}</p></b>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <a href="#!" class=" modal-action modal-close waves-effect waves-red btn-flat">Close</a>
+            </div>
+          </div>
+
+          <!-- Update Survivor Location Modal -->
+          <div id="updateLocationModal" class="modal">
+            <div class="modal-content">
+              <h4>Update Location Survivor</h4>
+              <form>
+                  <div class="row">
+                     <div class="input-field col s6 offset-s3">
+                      <input  ng-model="ID" type="text" class="validate">
+                      <label class="active black-text" for="name">ID</label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="input-field col s6 offset-s3">
+                       <input  ng-model="latUpdate" type="number" class="validate">
+                      <label class="active black-text" for="name">Latitude</label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="input-field col s6 offset-s3">
+                       <input  ng-model="LongUpdate" type="number" class="validate">
+                      <label class="active black-text" for="name">Longitude</label>
+                    </div>
+                  </div>
+                   <div class="row">
+                     <div class="col s6 offset-s3">
+                       <a ng-click="updateLocation()" class="red waves-effect waves-light btn right">Update</a>
+                     </div>
+                   </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <a href="#!" class=" modal-action modal-close waves-effect waves-red btn-flat">Close</a>
+            </div>
+          </div>
+
+          <!-- Report Survivor Modal -->
+          <div id="reportSurvivorModal" class="modal" ng-controller="SurvivorController">
+            <div class="modal-content">
+              <h4>Report a infected Survivor</h4>
+              <form>
+                   <div class="row">
+                    <div class="input-field col s6 offset-s3">
+                      <input  ng-model="IDReporter" type="text" class="validate">
+                      <label class="active black-text" for="name">ID Reporter</label>
+                    </div>
+                    <div class="row">
+                      <div class="input-field col s6 offset-s3">
+                        <input  ng-model="IDInfected" type="text" class="validate">
+                        <label class="active black-text" for="name">ID Infected</label>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col s6 offset-s3">
+                        <a ng-click="reportSurvivor()" class="red waves-effect waves-light btn right">Report</a>
+                      </div>
+                    </div>
+              </form>
+                <div class="row">
+                  <div class="col s12" ng-show="showProfile === true">
+                      <b><p class="center">Survivor Found : {{survivorFound}}</p></b>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col s12" ng-show="showError === true">
+                      <b><p class="center">{{survivorFound}}</p></b>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <a href="#!" class=" modal-action modal-close waves-effect waves-red btn-flat">Close</a>
+            </div>
+          </div>
+
+           <!-- Trade Survivor Modal -->
+            <div id="tradeSurvivorModal" class="modal">
+              <div class="modal-content">
+                <h4>Trade Items</h4>
+                <div class="row">
+                  <div class="col s6">
+                    <h5 class="center">First Survivor</h5>
+                    <div class="input-field col s6 offset-s3">
+                      <input  ng-model="IDFirst" type="text" class="validate">
+                      <label class="active black-text" for="name">ID</label>
+                    </div>
+                    <div class="row">
+                      <div class="col s12">
+                        <p>Water:</p>
+                        <p class="range-field">
+                          <input type="range" id="water" min="0" max="10" />
+                        </p>
+                         <p>Food:</p>
+                        <p class="range-field">
+                          <input type="range" id="food" min="0" max="10" />
+                        </p>
+                         <p>Medication:</p>
+                        <p class="range-field">
+                          <input type="range" id="medication" min="0" max="10" />
+                        </p>
+                        <p>Ammunition:</p>
+                        <p class="range-field">
+                          <input type="range" id="ammunition" min="0" max="10" />
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col s6">
+                    <h5 class="center">Second Survivor</h5>
+                    <div class="input-field col s6 offset-s3">
+                      <input  ng-model="IDSecond" type="text" class="validate">
+                      <label class="active black-text" for="name">ID</label>
+                    </div>
+                    <div class="row">
+                      <div class="col s12">
+                        <p>Water:</p>
+                        <p class="range-field">
+                          <input type="range" id="water" min="0" max="10" />
+                        </p>
+                         <p>Food:</p>
+                        <p class="range-field">
+                          <input type="range" id="food" min="0" max="10" />
+                        </p>
+                         <p>Medication:</p>
+                        <p class="range-field">
+                          <input type="range" id="medication" min="0" max="10" />
+                        </p>
+                        <p>Ammunition:</p>
+                        <p class="range-field">
+                          <input type="range" id="ammunition" min="0" max="10" />
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col s12">
+                    <a ng-click="trade()" class="red waves-effect waves-light btn right">Trade</a>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <a href="#!" class=" modal-action modal-close waves-effect waves-red btn-flat">Close</a>
+              </div>
+            </div>
+
+        <!-- Navbar -->
+        <nav>
+           <div class="row red darken-4">
+              <div class="col s12">
+                <div class="nav-wrapper red darken-4">
+                    <a href="index.html" class="brand-logo left">ZSSN</a>
+                    <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li><a class="modal-trigger" href="#reportSurvivorModal">Report Infected Survivor</a></li>
+                    <li><a class="modal-trigger" href="#tradeSurvivorModal"><i class="material-icons">&#xE8D4;</i></a></li>
+                    <li><a class="modal-trigger" href="#updateLocationModal"><i class="material-icons">my_location</i></a></li>
+                    <li><a class="modal-trigger" href="#addSurvivorModal"><i class="material-icons">person_add</i></a></li>
+                    <li><a class="modal-trigger" href="#pesquisaSurvivorModal"><i class="material-icons">search</i></a></li>
+                  </ul>
+                </div>
+              </div>
+           </div>
+          </nav>
+          <div class="conteudo">
+              <div ng-controller="SurvivorController">
+              <!-- list of Survivors -->
+                <div class="row">
+                    <div class="col s6">
+                        <h2 class="header">Survivors List</h4>
+                         <ul class="collection">
+                         <!-- Ordering List by create date -->
+                          <li class="collection-item avatar" ng-repeat="survivor in survivors | orderBy:'-created_at'">
+                              <!--Setting a image by the survivor gender -->
+                             <img ng-show="survivor.gender === 'M'" src="imgs/male.png" class="circle">
+                             <img src="imgs/female.png" ng-show="survivor.gender === 'F'" class="circle">
+                            <span class="title">Name: <b>{{survivor.name}}</b></span>
+                            <p>Age: <b>{{survivor.age}}</b><br>
+                               Gender: <b>{{survivor.gender}}</b><br>
+                               Date of creation: <b>{{survivor.created_at | date:'HH:mm dd/MM/yyyy '}}</b><br>
+                               Date of Update: <b>{{survivor.updated_at | date:'HH:mm dd/MM/yyyy '}}</b><br>
+                               location: <b>{{survivor.location}}</b><br>
+                            </p>
+                            <!-- flag for infected survivors  I got a problem with the "?" in the "infected?"-->
+                            <a href="#!" ng-if="survivor.infected === true" class="secondary-content "><i class="material-icons red-text">done</i></a>
+                          </li>
+                        </ul>
+                       
+                    </div>
+                    <!-- General Reports -->
+                    <div class="col s6">
+                      <h2 class="header">Reports</h4> 
+                       <!-- Infected Survivors report --> 
+                       <div class="card horizontal">
+                          <div class="card-image" style="width:20%;">
+                            <img src="imgs/zombie.jpg">
+                          </div>
+                          <div class="card-stacked">
+                            <div class="card-content">
+                              <b><p>{{infected.report.description}}</p></b>
+                            </div>
+                            <div class="card-action">
+                              <h5 class="left">{{infected.report.average_infected}}</h5>
+                            </div>
+                          </div>
+                        </div> 
+                        <!-- Healthy Survivor Report -->
+                       <div class="card horizontal">
+                          <div class="card-image">
+                            <img src="imgs/human.jpg">
+                          </div>
+                          <div class="card-stacked">
+                            <div class="card-content">
+                              <b><p>{{healthy.report.description}}</p></b>
+                            </div>
+                            <div class="card-action">
+                              <h5 class="left">{{healthy.report.average_healthy}}</h5>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Inventory Survivor Report -->
+                        <div class="card horizontal">
+                          <div class="card-image" style="width:33%;">
+                            <img src="imgs/bags.jpg">
+                          </div>
+                          <div class="card-stacked">
+                            <div class="card-content">
+                              <b><p>{{inventory.report.description}}</p></b>
+                            </div>
+                            <div class="card-action">
+                              <div class="row">
+                                <div class="col s6">
+                                  <h5>Items per person:</h5> <b><p>{{inventory.report.average_items_quantity_per_person}}</p></b>
+                                </div>
+                                <div class="col s6">
+                                  <h5>Items per Healthy person:</h5> <b><p>{{inventory.report.average_items_quantity_per_healthy_person | number:3}}</p></b>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Infected Points Report -->
+                        <div class="card horizontal">
+                          <div class="card-image" style="width:20%;">
+                            <img src="imgs/death.jpg">
+                          </div>
+                          <div class="card-stacked">
+                            <div class="card-content">
+                              <b><p>{{infectedPoints.report.description}}</p></b>
+                            </div>
+                            <div class="card-action">
+                              <h5 class="left">{{infectedPoints.report.total_points_lost}}</h5>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+          </div>
+    </body>
+</html>
